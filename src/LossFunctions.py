@@ -4,19 +4,21 @@ import torch
 
 class LossFunctions():
     def __init__(self, outputs, labels):
+        """Loss calculations
+
+        Args:
+            outputs (_type_): _description_
+            labels (_type_): _description_
+        """        
         super(LossFunctions, self).__init__()
         self.outputs = outputs
         self.labels = labels
 
     def BinaryCrossEntropy(self):
-        """ Binary Cross Entropy loss
-
-        Args:
-            outputs (_type_): Output of the NN
-            labels (_type_): Target labels, same shape as the outputs
+        """ Binary Cross Entropy loss (BCE)
 
         Returns:
-            [float]: Loss
+            [float]: Computed BCE loss value
         """
 
         if self.labels is None:
@@ -25,11 +27,17 @@ class LossFunctions():
         return loss_fn(self.outputs, self.labels.float()) 
 
     
-    # class sigmoidF1(nn.Module): !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        # @torch.cuda.amp.autocast() !!!!!! WHAT IS THIS??
-        # def forward():
-
+    # @torch.cuda.amp.autocast()
     def SigmoidF1(self, S=-1, E=0):
+        """Sigmoid F1 loss function (https://arxiv.org/pdf/2108.10566.pdf)
+
+        Args:
+            S (float, optional): Sigmoid tunable parameter for the slope . Defaults to -1.
+            E (float, optional): Sigmoid tunable parameter for the offset. Defaults to 0.
+
+        Returns:
+            [float]: Computed SigmoidF1 loss value
+        """           
         y_hat = torch.sigmoid(self.outputs)
         y = self.labels
 
@@ -50,7 +58,20 @@ class LossFunctions():
 
         return macroCost
 
-    def FocalLoss(self, gamma, alpha):
+
+    def FocalLoss(self, gamma=2.0, alpha=0.5):
+        """ Focal loss function (https://arxiv.org/pdf/1708.02002.pdf)
+
+        Args:
+            gamma (float, optional): Focusing parameter. Defaults to 2.
+            alpha (float, optional): Weighting factor. Defaults to 0.5.
+
+        Raises:
+            ValueError: Minimum value for the focusing parameter is 0
+
+        Returns:
+            [float]: Computed focal loss value
+        """   
         y_hat = torch.sigmoid(self.outputs)
         y = self.labels
 
