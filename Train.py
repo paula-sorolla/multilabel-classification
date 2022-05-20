@@ -18,6 +18,8 @@ class Train():
         self.loss_fn = loss_fn
 
     def trainer(self):
+        """Train the model
+        """        
         train_dataset, valid_dataset = Preprocessing.build_dataset(self.args.tokenizer_max_len, self.args.truncate)
         train_data_loader, valid_data_loader = Preprocessing.build_dataloader(train_dataset, valid_dataset, self.args.batch_size)
         print("Length of Train Dataloader: ", len(train_data_loader))
@@ -60,14 +62,14 @@ class Train():
             https://github.com/abhishekkrthakur/bert-sentiment/blob/master/src/engine.py
 
         Args:
-            data_loader (_type_): _description_
-            model (_type_): _description_
-            optimizer (_type_): _description_
-            device (_type_): _description_
-            scheduler (_type_): _description_
+            data_loader (DataLoader): PyTorch DataLoader
+            model (torch.nn): PyTorch NN model to evaluate
+            device (torch.device): Selected device for PyTorch operations
+            optimizer: AdamW optimizer
+            scheduler: Transformer scheduler
 
         Returns:
-            _type_: _description_
+            [Tensor]: Train loss
         """    
 
         train_loss = 0.0
@@ -93,10 +95,17 @@ class Train():
     
 
     def eval_fn(self, data_loader, model, device):
-        '''
-            Modified from Abhishek Thakur's BERT example: 
+        """ Modified from Abhishek Thakur's BERT example: 
             https://github.com/abhishekkrthakur/bert-sentiment/blob/master/src/engine.py
-        '''
+
+        Args:
+            data_loader (DataLoader): PyTorch DataLoader
+            model (torch.nn): PyTorch NN model to evaluate
+            device (torch.device): Selected device for PyTorch operations
+
+        Returns:
+            [Tensor]: Evaluation loss
+        """        
         eval_loss = 0.0
         model.eval()
         fin_targets = []
@@ -119,18 +128,28 @@ class Train():
         return eval_loss, fin_outputs, fin_targets
     
     def ret_model(self, n_train_steps, do_prob):
+        """Retrieve NN module
+
+        Args:
+            n_train_steps (int):  Number of training steps
+            do_prob (float): Dropout probability (tunable parameter)
+
+        Returns:
+            model: NN model to be trained
+        """        
+        bert_model = transformers.AutoModel.from_pretrained('allenai/scibert_scivocab_uncased')
         model = Classifier(n_train_steps, self.n_labels, do_prob, bert_model=bert_model)
         return model
 
     def ret_optimizer(self, model):
-        """ Taken from Abhishek Thakur's Tez library example: 
-            https://github.com/abhishekkrthakur/tez/blob/main/examples/text_classification/binary.py
+        """ Retrieve optimizer
+            Library example: https://github.com/abhishekkrthakur/tez/blob/main/examples/text_classification/binary.py
 
         Args:
-            model (_type_): _description_
+            model (torch.nn): NN model to optimize
 
         Returns:
-            _type_: _description_
+            AdamW: AdamW optimizer
         """        
 
         param_optimizer = list(model.named_parameters())
@@ -153,6 +172,17 @@ class Train():
         return opt
 
     def ret_scheduler(optimizer, num_train_steps):
+        """ Retrieve a schedule with a learning rate that decreases linearly from the initial lr set in the optimizer to 0,
+             after a warmup period during which it increases linearly from 0 to the initial lr set in the optimizer.
+             [https://huggingface.co/docs/transformers/main_classes/optimizer_schedules]
+
+        Args:
+            optimizer: NN trainer optimizer
+            num_train_steps (int): Number of training steps
+
+        Returns:
+            Transformer scheduler
+        """        
         sch = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=0, num_training_steps=num_train_steps)
         return sch
