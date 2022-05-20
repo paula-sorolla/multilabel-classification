@@ -1,19 +1,20 @@
 import argparse
 import transformers
 from transformers import AdamW, get_linear_schedule_with_warmup
-
 #mlflow
 import mlflow
 import mlflow.pytorch
 mlflow.set_experiment("/Users/sorollabayodp/Documents/Thesis/7.Development/Experiments run")
 
+# Own libraries
 from src.Preprocessing import Preprocessing
-from Inference import Inference
-from Train import Train
+from src.utils import Map, get_argparse_defaults
+import Inference
+import Train
 
 
 parser = argparse.ArgumentParser(description='PyTorch Multilabel classifier (BERT)')
-parser.add_argument('--data', help='path to dataset', default='/data', type=str)
+parser.add_argument('--data_path', help='path to dataset', default='/data/', type=str)
 parser.add_argument('--lr', default=1e-3, type=float)
 parser.add_argument('--model-name', default='best_model.pt')
 parser.add_argument('--model-path', default='/models/', type=str)
@@ -38,14 +39,25 @@ parser.add_argument('--offset', '-off', default=0, type=float,
                     metavar='N', help='Offset of the sigmoid function loss')
 
 
-def main( data = '/data/',  ep = 1, loss = "BCE", num_classes = 52, E = 1, S = -9, batch_size = 64):
+def main( data_path = '/data/',  ep = 1, loss = "BCE", num_classes = 52, E = 1, S = -9, batch_size = 64):
+    """Main executable function for model training
+
+    Args:
+        data_path (str, optional): _description_. Defaults to '/data/'.
+        ep (int, optional): _description_. Defaults to 1.
+        loss (str, optional): _description_. Defaults to "BCE".
+        num_classes (int, optional): _description_. Defaults to 52.
+        E (int, optional): _description_. Defaults to 1.
+        S (int, optional): _description_. Defaults to -9.
+        batch_size (int, optional): _description_. Defaults to 64.
+    """    
 
     args = get_argparse_defaults(parser)
     args = Map(args)
 
     args.num_epochs = ep
     args.loss_function = loss
-    args.data = data
+    args.data_path = data_path
     args.num_classes = num_classes
 
     args.E = E

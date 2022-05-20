@@ -1,4 +1,12 @@
 def get_argparse_defaults(parser):
+    """ Get hold of the default arguments without having to parse first
+
+    Args:
+        parser (argparse.ArgumentParser): Object for parsing command line strings into Python objects.
+
+    Returns:
+        [dict]: Dictionary of default arguments
+    """    
     defaults = {}
     for action in parser._actions:
         if not action.required and action.dest != "help":
