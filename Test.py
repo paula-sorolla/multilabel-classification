@@ -2,24 +2,24 @@ import torch
 from torch.utils.data import DataLoader
 from tqdm.notebook import tqdm
 
-from src.Preprocessing import Dataset
+from src.Preprocessing import Preprocessing
+from src.BuildModels import create_model
 
-class Inference():
-    def __init__(self, args, model, tokenizer, test_set) -> None:
+
+class Test(object):
+    def __init__(self, args) -> None:
         """Inference class for Test set analysis
 
         Args:
             args (ArgumentParser): Argument parser
-            model (torch.nn): Neural Network model to predict
-            tokenizer (AutoTokenizer): Hugging face tokenizer
-            test_set (DataFrame): Test set dataframe
         """        
         self.args = args
-        self.model = model
-        self.test = test_set
-        self.tokenizer = tokenizer
 
-    def inference_batches(self, batchSize = 64):
+        # Run the inference
+        test_outputs, test_targets = self.inference_batches()
+        return test_outputs, test_targets
+
+    def inference_batches(self):
         """Predict outputs for inference phase
 
         Args:
@@ -33,9 +33,13 @@ class Inference():
         test_outputs = []
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
+        # Create the model
+        model, tokenizer, _, _ = create_model(self.args, 'allenai/scibert_scivocab_uncased').cuda()
+
         # Load the data
-        test_dataset = Dataset(self.test.input.tolist(), self.test.iloc[:, 3:].values.tolist(), self.tokenizer, self.args['tokenizer_max_len'], self.args['truncate'])
-        data_loader = DataLoader(test_dataset, batch_size=batchSize, shuffle=True, num_workers=2)
+        prep = Preprocessing(self.args.data_path)
+        _, _, test_dataset = prep.build_dataset(tokenizer, self.args.tokenizer_max)
+        data_loader = prep.build_dataloader(test_dataset, None, self.args.batch_size)
 
         with torch.no_grad():
             for bi, d in tqdm(enumerate(data_loader), total=len(data_loader)):

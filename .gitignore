@@ -130,3 +130,5 @@ dmypy.json
 .DS_Store
 mlruns/0/meta.yaml
 *.yaml
+data/
+outputs/

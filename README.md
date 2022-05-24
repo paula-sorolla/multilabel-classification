@@ -8,7 +8,8 @@ The goal and all previous work made at Elsevier are summarized in the following 
 ## Table of Contents
 
 1. [Repository Structure](#repository-structure)
-2. [Setup](#Setup)
+2. [Setup](#setup)
+    - [Configurations](#configurations)
 3. [Multilabel classifier](#multilabel-classifier)
     - [Network architecture](#network-architecture)
     - [Loss functions](#loss-functions)
@@ -25,13 +26,13 @@ Below is the structure of the repo with a brief description.
 repo/
   notebooks/    BERT_classifier.ipynb - Includes the working notebook where the first experiments have been setup and run
   src/
-    ClassifierModels.py - Includes the Classifier network models to be chosen for training in the experimental phase
+    BuildModels.py - Includes the Classifier network models to be chosen for training in the experimental phase
     LossFunctions.py - Includes different Loss functions definitions to be chosen for training in the experimental phase
     Postprocessing.py - Includes functions to compute metrics and retrieve results form the experiments
     Preprocessing.py - Includes functions to load the and setup the required datasets necessary for the experiments
     utils.py - Help functions used throughout the process
-  Inference.py - Includes the Inference metohds for testing the multilabel classification
-  main.py - Main executable file for the train/testing of the model
+  Test.py - Includes the Inference metohds for testing the multilabel classification
+  main.py - Main executable file. This is used for both train/testing of the model. Different configurations can be chosen
   README.md - README providing useful information of the project
   requirements_conda.txt - The requirements file for reproducing the analysis in an Anaconda environment
   requirements.txt - The requirements file for reproducing the analysis in an Python3 environment
@@ -46,6 +47,22 @@ Pip install the requirements in an Anaconda (requirements_conda.txt) or Python (
 ```bash
     python main.py run
   ```
+
+### Configurations
+
+    a. --train(-tr): if True then model starts training, otherwise the model will be only used for test (inference).
+    b. --data_path(-dp): The directory path to the dataset
+    c. --output_path(-op): The directory path to the outputs (both for saving/loading)
+    d. --learning_rate(-lr): Learning rate for training phase
+    e. --model_name(-mn): Model name for saving/loading for training/testiing
+    f. --workers(-j): Number of data loading workers
+    g. --threshold(-thr): Threshold value
+    h. --batch_size(-b): Batch size for both train and testing
+    i. --tokenizer_max(-tm): Tokenizer max length of the BERT model 
+    j. --num_epochs(-e): Number of training epochs
+    k. --loss_function(-lf): Loss function to be used to compute the gradient during training
+
+
 
 ## Multilabel Classififer
 

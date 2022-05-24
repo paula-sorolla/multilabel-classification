@@ -9,37 +9,6 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 
-class Dataset:
-    def __init__(self, texts, labels, tokenizer, max_len):
-        self.texts = texts
-        self.labels = labels
-
-        self.tokenizer = tokenizer
-        self.max_len = max_len
-    
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, index):
-        text = self.texts[index]
-        label = self.labels[index]
-
-        inputs = self.tokenizer.__call__(text,
-                                        None,
-                                        add_special_tokens=True,
-                                        max_length=self.max_len,
-                                        padding="max_length",
-                                        truncation=True,
-                                        )
-        ids = inputs["input_ids"]
-        mask = inputs["attention_mask"]
-
-        return {
-            "ids": torch.tensor(ids, dtype=torch.long),
-            "mask": torch.tensor(mask, dtype=torch.long),
-            "labels": torch.tensor(label, dtype=torch.long)
-        }
-
 
 class Preprocessing(object):
 
@@ -140,24 +109,26 @@ class Preprocessing(object):
         print(f"Set {version} with suffix '{suffix}' was loaded successfully.")
         return train, test, val
 
-    def build_dataset(self, tokenizer, tokenizer_max_len, truncate):
+    def build_dataset(self, tokenizer, tokenizer_max_len):
         
         '''
         Tokenize and map the training and validation sets
         '''
-        train_dataset = Dataset(self.train.input.tolist(), self.train.iloc[:, 3:].values.tolist(), tokenizer, tokenizer_max_len, truncate)
-        valid_dataset = Dataset(self.val.input.tolist(), self.val.iloc[:, 3:].values.tolist(), tokenizer, tokenizer_max_len, truncate)
+        train_dataset = Dataset(self.train.input.tolist(), self.train.iloc[:, 3:].values.tolist(), tokenizer, tokenizer_max_len)
+        valid_dataset = Dataset(self.val.input.tolist(), self.val.iloc[:, 3:].values.tolist(), tokenizer, tokenizer_max_len)
+        test_dataset = Dataset(self.test.input.tolist(), self.test.iloc[:, 3:].values.tolist(), tokenizer, tokenizer_max_len)
         
-        return train_dataset, valid_dataset
+        return train_dataset, valid_dataset, test_dataset
 
-    def build_dataloader(train_dataset, valid_dataset, batch_size):
+    @staticmethod
+    def build_dataloader(dataset_1, dataset_2, batch_size):
         '''
         Create the torch dataloaders
         '''
-        train_data_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
-        valid_data_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=True, num_workers=1)
+        data_loader_1 = DataLoader(dataset_1, batch_size=batch_size, shuffle=True, num_workers=2)
+        data_loader_2 = DataLoader(dataset_2, batch_size=batch_size, shuffle=True, num_workers=1) if dataset_2 else None
 
-        return train_data_loader, valid_data_loader
+        return data_loader_1, data_loader_2
 
     @staticmethod
     def remove_testDuplicates(train, val, test):
