@@ -5,16 +5,22 @@ The project is intended to provide improvements and new approaches to the docume
 
 The goal and all previous work made at Elsevier are summarized in the following [Confluence page](https://confluence.elsevier.com/display/ContentAssets/Document-Level+Classification).
 
-# Table of Contents
+## Table of Contents
+
 1. [Repository Structure](#repository-structure)
 2. [Setup](#Setup)
-3. [Network architecture](#network-architecture)
+3. [Multilabel classifier](#multilabel-classifier)
+    - [Network architecture](#network-architecture)
+    - [Loss functions](#loss-functions)
 
 
+## Problem definition:
+Multilabel c
 
+## Repository Structure
 
-# Repository Structure
 Below is the structure of the repo with a brief description.
+
 ```
 repo/
   notebooks/    BERT_classifier.ipynb - Includes the working notebook where the first experiments have been setup and run
@@ -33,26 +39,32 @@ repo/
   
 ```
 
-# Setup
+## Setup
 
+Pip install the requirements in an Anaconda (requirements_conda.txt) or Python (requirements.txt) environment and in the repro folder run:
 
+```bash
+    python main.py run
+  ```
 
-# Network architecture
+## Multilabel Classififer
+
+### Network architecture
 
 This repository includes 2 different neural network arquitectures that are being currently tested for comparison:
 
+1. BERT base classifier using SciBERT followed by a linear layer:
 ![BERT base classifier](./img/BERTbase.png)
-1. BERT base classifier using SciBERT followed by a 
 
-
+2. BERT base classifier using SciBERT followed by an LSTM layer and a Classification head
 ![BERT LSTM classifier](./img/BERTlstm.png)
 
-<!-- ## Setup
+### Loss functions
 
+The loss functions that are currently being tested in this project are:
 
+1. Binary Cross Entropy - [Pytorch](https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html)
+2. SigmoidF1: A Smooth F1 Score Surrogate Loss - [See paper](https://arxiv.org/pdf/2108.10566.pdf)
+3. Asymmetric Loss - [See Paper](https://arxiv.org/pdf/2009.14119.pdf)
+4. Focal Loss - [See Paper](https://arxiv.org/pdf/1708.02002.pdf)
 
-`export PY_ARTIFACTORY_TOKEN=`
-
-```bash
-    make docker_update_ci
-  ``` -->
