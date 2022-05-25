@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import transformers
 from transformers import AdamW, get_linear_schedule_with_warmup
@@ -96,15 +97,17 @@ class Classifier(nn.Module):
             bert_model (transformers.AutoModel): BERT HuggingFace model
         """        
         super(Classifier, self).__init__()
-
         self.n_classes = 52
         self.bert_hiddenSize = 768
         self.bert = bert_model
 
         self.dropout = nn.Dropout(args.do_prob)
-        self.out = nn.Linear(self.bert_hiddenSize, self.n_classes)
+        self.out1 = nn.Linear(self.bert_hiddenSize, 256)
+        self.out2 = nn.Linear(256, self.n_classes)
+        
         self.n_train_steps = n_train_steps
         self.step_scheduler_after = "batch"
+
 
     def forward(self, ids, mask):
         """NN Forward pass: we receive the Tensor inputs and return a Tensor containing the output.
@@ -118,7 +121,34 @@ class Classifier(nn.Module):
         """        
         output_1 = self.bert(ids, attention_mask=mask)["pooler_output"]
         output_2 = self.dropout(output_1)
-        output = self.out(output_2)
+        output_3 = F.relu(self.out1(output_2))
+        output = F.softmax(self.out2(output_3))
+        return output
+
+class Classifier_3lay(nn.Module):
+    """ Fintunable BERT classifier with 3 classification layers
+    """   
+    def __init__(self, n_train_steps, n_classes, do_prob, bert_model):
+        super(Classifier, self).__init__()
+        self.bert = bert_model
+        self.n_train_steps = n_train_steps
+        self.step_scheduler_after = "batch"
+        
+        self.classifier = nn.Sequential(
+          nn.Linear(768, 1024),
+          nn.Dropout(do_prob),  
+          nn.ReLU(),
+          nn.Linear(1024, 512),
+          nn.ReLU(),
+          nn.Linear(512, 52),
+        )
+
+    def forward(self, ids, mask):
+        """NN forward pass
+        """        
+        output_bert = self.bert(ids, attention_mask=mask)["pooler_output"]
+        output_class = self.classifier(output_bert)
+        output = F.softmax(output_class)
         return output
 
 class LSTM_Classifier(nn.Module):

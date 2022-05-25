@@ -24,19 +24,19 @@ Below is the structure of the repo with a brief description.
 
 ```
 repo/
-  notebooks/    BERT_classifier.ipynb - Includes the working notebook where the first experiments have been setup and run
+  notebooks/    
+    BERT_classifier.ipynb - Includes the working notebook where the first experiments have been setup and run
   src/
     BuildModels.py - Includes the Classifier network models to be chosen for training in the experimental phase
     LossFunctions.py - Includes different Loss functions definitions to be chosen for training in the experimental phase
     Postprocessing.py - Includes functions to compute metrics and retrieve results form the experiments
     Preprocessing.py - Includes functions to load the and setup the required datasets necessary for the experiments
     utils.py - Help functions used throughout the process
-  Test.py - Includes the Inference metohds for testing the multilabel classification
   main.py - Main executable file. This is used for both train/testing of the model. Different configurations can be chosen
-  README.md - README providing useful information of the project
-  requirements_conda.txt - The requirements file for reproducing the analysis in an Anaconda environment
-  requirements.txt - The requirements file for reproducing the analysis in an Python3 environment
   Train.py - Includes the Training and Evaluation metohds for the multilabel classification
+  Test.py - Includes the Inference metohds for testing the multilabel classification
+  README.md - README providing useful information of the project
+  requirements.txt - The requirements file for reproducing the analysis in an Python3 environment
   
 ```
 
