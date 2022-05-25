@@ -132,3 +132,4 @@ mlruns/0/meta.yaml
 *.yaml
 data/
 outputs/
+mlruns/

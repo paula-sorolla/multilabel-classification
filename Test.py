@@ -34,7 +34,7 @@ class Test(object):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # Create the model
-        model, tokenizer, _, _ = create_model(self.args, 'allenai/scibert_scivocab_uncased').cuda()
+        model, tokenizer, _, _ = create_model(self.args, 'allenai/scibert_scivocab_uncased')
 
         # Load the data
         prep = Preprocessing(self.args.data_path)

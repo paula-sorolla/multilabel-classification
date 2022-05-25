@@ -17,7 +17,6 @@ def create_model(args, bert_hf):
     Returns:
         model: NN model to be trained
     """    
-    print("Let's create the model!!!")
     # Load the BERT Model and Tokenizer to be used:
     tokenizer = transformers.AutoTokenizer.from_pretrained(bert_hf, do_lower_case=True)
     bert_model = transformers.AutoModel.from_pretrained(bert_hf)
@@ -35,7 +34,7 @@ def create_model(args, bert_hf):
     model.to(device)
     model = nn.DataParallel(model)
     
-    print("Model created!!!")
+    print("Model created!")
     return model, tokenizer, optimizer, scheduler
 
 def ret_optimizer(model, lr):

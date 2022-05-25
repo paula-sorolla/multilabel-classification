@@ -1,8 +1,5 @@
 import numpy as np
-import nltk
-from nltk.corpus import stopwords
-nltk.download('stopwords')
-nltk.download('punkt')
+
 import re
 import pandas as pd
 
@@ -101,12 +98,14 @@ class Preprocessing(object):
         val = pd.read_csv(f"{path}set_{version}_val{suffix}.csv")
         
         # Reduce memory by optimizing DF columns types if wanted
+        verbose = False
         if reduce_memory:
-            train = self.reduce_mem_usage(train)
-            test = self.reduce_mem_usage(test)
-            val = self.reduce_mem_usage(val)
+            train = self.reduce_mem_usage(train, verbose)
+            test = self.reduce_mem_usage(test, verbose)
+            val = self.reduce_mem_usage(val, verbose)
+        if verbose:
+            print(f"Set {version} with suffix '{suffix}' was loaded successfully.")
         
-        print(f"Set {version} with suffix '{suffix}' was loaded successfully.")
         return train, test, val
 
     def build_dataset(self, tokenizer, tokenizer_max_len):

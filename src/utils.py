@@ -14,10 +14,13 @@ def get_argparse_defaults(parser):
     return defaults
 
 class Map(dict):
-    """
-    Example:
-    m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
-    """
+    """dot.notation access to dictionary attributes
+        Example:
+        m = Map({'first_name': 'Eduardo'}, last_name='Pool', age=24, sports=['Soccer'])
+
+    Args:
+        dict (dict): Dictionary to map
+    """   
     def __init__(self, *args, **kwargs):
         super(Map, self).__init__(*args, **kwargs)
         for arg in args:

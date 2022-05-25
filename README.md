@@ -42,11 +42,46 @@ repo/
 
 ## Setup
 
-Pip install the requirements in an Anaconda (requirements_conda.txt) or Python (requirements.txt) environment and in the repro folder run:
+1. Create a virtual environment and install the requirements specified in "requirements.txt" 
 
 ```bash
-    python main.py run
+    pip install virtualenv
+    virtualenv Thesis
+    source Thesis/bin/activate
+    pip install -r requirements.txt
   ```
+
+2. Then run the **main** file with the desired configuration. Some examples can provided:
+
+For **TRAINING**:
+
+```bash
+    python main.py -tr True -dp ~/data/ -op ~/outputs/ -lr 1e-5 -mn 'best_model.pt' -j 2 -thr 0.5 -b 32 -tm 512 -e 10 -lf 'BCE' -do 0.5
+
+  ```
+
+For **TESTING**:
+
+```bash
+    python main.py -tr False -dp ~/data/ -op ~/outputs/ -lr 1e-5 -mn 'best_model.pt' -j 2 -thr 0.5 -b 32 -tm 512 -e 10 -lf 'BCE' -do 0.5
+
+  ```
+
+<!-- 3. To solve possible errors with NLTK download, run:
+
+```bash
+  import nltk
+  import ssl
+
+  try:
+      _create_unverified_https_context = ssl._create_unverified_context
+  except AttributeError:
+      pass
+  else:
+      ssl._create_default_https_context = _create_unverified_https_context
+
+  nltk.download()
+  ``` -->
 
 ### Configurations
 
@@ -85,3 +120,8 @@ The loss functions that are currently being tested in this project are:
 3. Asymmetric Loss - [See Paper](https://arxiv.org/pdf/2009.14119.pdf)
 4. Focal Loss - [See Paper](https://arxiv.org/pdf/1708.02002.pdf)
 
+
+
+# Contact
+
+For any questions regarding the work done, please contact Paula Sorolla Bayod: [p.sorollabayod@elsevier.com](mailto:p.sorollabayod@elsevier.com) or [paula.sorolla@gmail.com](mailto:paula.sorolla@gmail.com)

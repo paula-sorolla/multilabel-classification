@@ -2,7 +2,7 @@ import pandas as pd
 
 
 class Metrics():    
-    def __init__(self, preds, labels):
+    def __init__(self, preds, labels, threshold=0.5):
         """Class used to compute some metrics on multilabel results
 
         Args:
@@ -10,7 +10,9 @@ class Metrics():
             labels (list): List of ground true labels [1 x Num Classes]
         """        
         lab_df = pd.DataFrame(labels)
-        pred_df = pd.DataFrame(preds).round(0).astype(int)
+        # pred_df = pd.DataFrame(preds).round(0).astype(int)
+        pred_df = pd.DataFrame(preds).applymap(lambda x: self.set_threshold(x, threshold))
+        
         self.lab_df = lab_df
         self.pred_df = pred_df
 
@@ -27,6 +29,9 @@ class Metrics():
             [list]: Proportion of occurrence of each of the classes over the whole samples
         """        
         return self.lab_df.sum() / sum(self.lab_df.sum())
+
+    def set_threshold(x, thr):
+        return 1 if x > thr else 0
 
     def get_precision(self, i):
         """Compute the precision of class i

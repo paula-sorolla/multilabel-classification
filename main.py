@@ -13,6 +13,8 @@ from src.utils import Map, get_argparse_defaults
 from Test import Test
 from Train import Train
 
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 if __name__ == '__main__':
 
@@ -36,15 +38,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Log the experiment parameters
-    # for key, value in args.items():
-    #     mlflow.log_param(key, value)
+    for arg in vars(args):
+        mlflow.log_param(arg, getattr(args, arg))
 
     # Do train, test, or both 
     if args.train:
         class_train = Train(args)
     if args.test:
         labels, outputs = Test(args)
-        test_metrics = Metrics(outputs, labels).retrieve_allMetrics()
+        test_metrics = Metrics(outputs, labels, args.threshold).retrieve_allMetrics()
 
     print('Done!')
 

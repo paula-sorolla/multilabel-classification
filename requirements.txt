@@ -20,7 +20,6 @@ joblib==1.1.0
 Mako==1.2.0
 MarkupSafe==2.1.1
 mlflow==1.26.0
-nltk==3.7
 numpy==1.22.3
 oauthlib==3.2.0
 packaging==21.3
@@ -42,6 +41,7 @@ smmap==5.0.0
 SQLAlchemy==1.4.36
 sqlparse==0.4.2
 tabulate==0.8.9
+tdqm==0.0.1
 tokenizers==0.12.1
 torch==1.11.0
 tqdm==4.64.0
