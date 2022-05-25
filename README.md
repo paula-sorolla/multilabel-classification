@@ -11,12 +11,11 @@ The goal and all previous work made at Elsevier are summarized in the following 
 2. [Setup](#setup)
     - [Configurations](#configurations)
 3. [Multilabel classifier](#multilabel-classifier)
+    - [Problem definition](#problem-definition)
     - [Network architecture](#network-architecture)
     - [Loss functions](#loss-functions)
+4. [Contact](#contact)
 
-
-## Problem definition:
-Multilabel c
 
 ## Repository Structure
 
@@ -53,14 +52,14 @@ repo/
 
 2. Then run the **main** file with the desired configuration. Some examples can provided:
 
-For **TRAINING**:
+Example for **TRAINING**:
 
 ```bash
     python main.py -tr True -dp ~/data/ -op ~/outputs/ -lr 1e-5 -mn 'best_model.pt' -j 2 -thr 0.5 -b 32 -tm 512 -e 10 -lf 'BCE' -do 0.5
 
   ```
 
-For **TESTING**:
+Example for **TESTING**:
 
 ```bash
     python main.py -tr False -dp ~/data/ -op ~/outputs/ -lr 1e-5 -mn 'best_model.pt' -j 2 -thr 0.5 -b 32 -tm 512 -e 10 -lf 'BCE' -do 0.5
@@ -101,17 +100,29 @@ For **TESTING**:
 
 ## Multilabel Classififer
 
-### Network architecture
+### **Problem definition**:
 
-This repository includes 2 different neural network arquitectures that are being currently tested for comparison:
+Given a dataset of **500k samples** of scientific articles, labelled into **52 classes**, a multilabel classification problem is defined.
+
+* The samples correspond to the concatenated *Title + Keywords from CARs + Abstract + (2nd abstract)* of the aforementioned articles.
+* The 52 classes correspond to *Emtree terms* -> a hierarchically structured, controlled vocabulary for 	biomedicine and related life sciences, frequently used as index terms in Embase
+
+The multilabel classification problem corresponds to the task of attributing multiple labels to examples via predictions. In the given dataset, an average of 6.6 labels per sample is observed.
+
+### **Network architecture**:
+
+This repository includes 3 different neural network arquitectures that are being currently tested for comparison:
 
 1. BERT base classifier using SciBERT followed by a linear layer:
 ![BERT base classifier](./img/BERTbase.png)
 
+1. BERT base classifier using SciBERT followed by 3 linear layers:
+![BERT base classifier](./img/BERTclass3.png)
+
 2. BERT base classifier using SciBERT followed by an LSTM layer and a Classification head
 ![BERT LSTM classifier](./img/BERTlstm.png)
 
-### Loss functions
+### **Loss functions**:
 
 The loss functions that are currently being tested in this project are:
 
