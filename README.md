@@ -1,4 +1,4 @@
-# Multilabel classification using BERT embeddings
+# Multilabel document classification in an imbalanced dataset using transformers
 
 This is the main repository for the Internship Thesis developed by Paula Sorolla.
 The project is intended to provide improvements and new approaches to the document-level classification component in the Canary pipeline.
